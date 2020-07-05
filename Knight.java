@@ -1,10 +1,7 @@
 package com.chessgame.main;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.util.ArrayList;
-
 public class Knight extends ChessPiece {
 	
 	public Knight(int x, int y, ID id, Faction faction) {
@@ -13,90 +10,32 @@ public class Knight extends ChessPiece {
 
 	public void render(Graphics g) {
 		if(selected) {
-			if(faction == Faction.WHITE) {
-				g.setColor(Color.WHITE);
-				g.fillOval(x, y, 60, 60);
-				g.setColor(Color.BLUE);
-				g.drawOval(x, y, 60, 60);
-				g.setFont(new Font("Arial", Font.BOLD, 20));
-				g.drawString("Kn", x + 20, y + 40);
-				super.clamp(this);
-			}
-			
-			if(faction == Faction.BLACK) {
-				g.setColor(Color.BLACK);
-				g.fillOval(x, y, 60, 60);
-				g.setColor(Color.BLUE);
-				g.drawOval(x, y, 60, 60);
-				g.setFont(new Font("Arial", Font.BOLD, 20));
-				g.drawString("Kn", x + 20, y + 40);
-				super.clamp(this);
-			}
-		} else {
-			if(faction == Faction.WHITE) {
-				g.setColor(Color.WHITE);
-				g.fillOval(x, y, 60, 60);
-				g.setColor(new Color(0, 119, 204));
-				g.drawOval(x, y, 60, 60);
-				g.setFont(new Font("Arial", Font.BOLD, 20));
-				g.drawString("Kn", x + 20, y + 40);
-				super.clamp(this);
-			}
-			
-			if(faction == Faction.BLACK) {
-				g.setColor(Color.BLACK);
-				g.fillOval(x, y, 60, 60);
-				g.setColor(new Color(0, 119, 204));
-				g.drawOval(x, y, 60, 60);
-				g.setFont(new Font("Arial", Font.BOLD, 20));
-				g.drawString("Kn", x + 20, y + 40);
-				super.clamp(this);
-			}
+			makeSelected(g, "Kn");
+			return;
 		}
 		
+		if(faction == Faction.WHITE) {
+			make(Color.white, g, "Kn");
+		} else {
+			make(Color.black, g, "Kn");
+		}
 	}
 	
-	public GridSquare[] possibleMoves() {
-		 ArrayList<GridSquare> moves = new ArrayList<GridSquare>();
-		
-		for(int i = 0; i < Handler.objects.size(); i++) {					
-			if(Handler.objects.get(i).getY() + 120 == y &&
-					Handler.objects.get(i).getX() - 60 == x) {
-				moves.add((GridSquare) Handler.objects.get(i));
-			} else if(Handler.objects.get(i).getY() + 120 == y &&
-					Handler.objects.get(i).getX() + 60 == x) {
-				moves.add((GridSquare) Handler.objects.get(i));
-			}
-			if(Handler.objects.get(i).getY() - 120 == y &&
-					Handler.objects.get(i).getX() - 60 == x) {
-				moves.add((GridSquare) Handler.objects.get(i));
-			} else if(Handler.objects.get(i).getY() - 120 == y &&
-					Handler.objects.get(i).getX() + 60 == x) {
-				moves.add((GridSquare) Handler.objects.get(i));
-			}
-			if(Handler.objects.get(i).getX() + 120 == x &&
-					Handler.objects.get(i).getY() - 60 == y) {
-				moves.add((GridSquare) Handler.objects.get(i));
-			} else if(Handler.objects.get(i).getX() + 120 == x &&
-					Handler.objects.get(i).getY() + 60 == y) {
-				moves.add((GridSquare) Handler.objects.get(i));
-			}
-			if(Handler.objects.get(i).getX() - 120 == x &&
-					Handler.objects.get(i).getY() - 60 == y) {
-				moves.add((GridSquare) Handler.objects.get(i));
-			} else if(Handler.objects.get(i).getX() - 120 == x &&
-					Handler.objects.get(i).getY() + 60 == y) {
-				moves.add((GridSquare) Handler.objects.get(i));
-			}
-		}
-		
-		GridSquare[] possibleMoves = new GridSquare[moves.size()];
-		return moves.toArray(possibleMoves);
+	public void possibleMoves() {
+		possibleMoves.clear();
+		calculateMags();
+		findL(1,2);
+		findL(2,1);
 	}
-
-	@Override
-	public GridSquare[] possibleCaptures() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public void findL(int xMag, int yMag) {
+		Handler.objects.forEach(i -> {
+			if(Math.abs(i.getXMag()) == xMag  && Math.abs(i.getYMag()) == yMag)
+				if(i.contains()) {
+					if(i.getContains().getFaction() != faction) possibleMoves.add(i);
+				}else{
+					possibleMoves.add(i);
+				}
+		});
 	}
 }

@@ -125,14 +125,7 @@ public class Board extends GameObject {
 	}
 
 	@Override
-	protected void setContains(ChessPiece chessPiece) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected ChessPiece getContains() {
-		// TODO Auto-generated method stub
-		return null;
+	public int compareTo(GameObject o) {
+		return -1;
 	}
 }

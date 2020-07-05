@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public class Handler {
 	
-	static LinkedList <GameObject> objects = new LinkedList<GameObject>();
+	static LinkedList <GridSquare> objects = new LinkedList<GridSquare>();
 	static LinkedList <ChessPiece> pieces = new LinkedList<ChessPiece>();
 	
 	public Handler() {}
@@ -22,11 +22,11 @@ public class Handler {
 		}
 	}
 	
-	public void addObject(GameObject object) {
+	public void addObject(GridSquare object) {
 		Handler.objects.add(object);
 	}
 	
-	public void removeObject(GameObject object) {
+	public void removeObject(GridSquare object) {
 		Handler.objects.remove(object);
 	}
 	
@@ -37,5 +37,20 @@ public class Handler {
 	public void removeObject(ChessPiece piece) {
 		Handler.pieces.remove(piece);
 	}
+	
+	public void sortObjects() {
+		for(int i = 0; i < objects.size() - 1; i++) {
+			for(int j = 0; j < objects.size() - 1; j++) {
+				if(objects.get(j).compareTo(objects.get(j+1)) == -1) {
+					GridSquare temp = objects.get(j+1);
+					objects.set((j+1), objects.get(j));
+					objects.set((j+1), temp);
+				}
+			}
+		}
+		
+	}
+	
+	public void sortPieces() {}
 	
 }
