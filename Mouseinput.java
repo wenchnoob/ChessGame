@@ -17,27 +17,27 @@ public class MouseInput implements MouseListener {
 		
 		private LogicGate logic = new LogicGate();
 		
-		public MouseInput() {
-		}
+		public MouseInput() {}
 		
 	@Override
 		public void mouseClicked(MouseEvent e) {
-		
 			if(!pieceSelected) {
 				curX = e.getX();
 				curY = e.getY();
-				for(int j = 0; j < Handler.pieces.size(); j++) {
-					if( withinBounds(curX, curY, Handler.pieces.get(j))) {
+				for(int i = 0; i < Handler.pieces.size(); i++) {
+					if( withinBounds(curX, curY, Handler.pieces.get(i))) {
 						pieceSelected = true;
-						selectedPiece = Handler.pieces.get(j);
-						Handler.pieces.get(j).setSelected(true);
+						selectedPiece = Handler.pieces.get(i);
+						Handler.pieces.get(i).setSelected(true);
 						break;
 					}
 				}
 				
 			} else {
-				if(logic.isMoveable(selectedPiece)) {
-					GridSquare[] possibleMoves = logic.possibleMoves(selectedPiece);
+				LogicGate.update();
+				selectedPiece.possibleMoves();
+				logic.setSelected(selectedPiece);
+				if(logic.isMoveable()) {
 					GridSquare move = null;
 					
 					nextX = e.getX();
@@ -52,7 +52,7 @@ public class MouseInput implements MouseListener {
 						}
 					}
 					
-					if(logic.isMoveValid(possibleMoves, move)) {
+					if(logic.isMoveValid(move)) {
 						selectedPiece.setMoveCount(selectedPiece.getMoveCount() + 1);
 						
 						for(int i = 0; i < Handler.pieces.size(); i++) {
@@ -61,10 +61,11 @@ public class MouseInput implements MouseListener {
 								Handler.pieces.get(i).setY(nextY);
 							}
 						}
+						
 						for(int i = 0; i < Handler.objects.size(); i++) {
 							if(Handler.objects.get(i).getX() == nextX &&
 									Handler.objects.get(i).getY() == nextY) {
-								logic.update(selectedPiece, Handler.objects.get(i));
+								LogicGate.update();
 							}
 						}
 						
@@ -76,7 +77,7 @@ public class MouseInput implements MouseListener {
 								Handler.pieces.remove(i);
 							}
 						}
-						
+						Saver.saveMove();
 						selectedPiece.setSelected(false);
 						pieceSelected = false;
 					} else {
@@ -91,18 +92,10 @@ public class MouseInput implements MouseListener {
 			}
 		}
 			
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {	
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {	
-		}
-		@Override
-		public void mousePressed(MouseEvent e) {
-		}
+		@Override public void mouseReleased(MouseEvent e) {}
+		@Override public void mouseEntered(MouseEvent e) {}
+		@Override public void mouseExited(MouseEvent e) {} 
+		@Override public void mousePressed(MouseEvent e) {}
 		
 		public boolean withinBounds(int x, int y, GameObject object) {
 			if(x >= object.getX() && x <= object.getX() + 60) {
